@@ -120,6 +120,7 @@ async function getClientToken(client, method, path, payload) {
     };
 
     core.debug(`Retrieving Vault Token from ${path} endpoint`);
+    core.debug(`payload: ${JSON.stringify(options)}`);
 
     /** @type {import('got').Response<VaultLoginResponse>} */
     let response;

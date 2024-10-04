@@ -18583,6 +18583,8 @@ async function exportSecrets() {
     const caCertificateRaw = core.getInput('caCertificate', { required: false });
     if (caCertificateRaw != null) {
         defaultOptions.https.certificateAuthority = Buffer.from(caCertificateRaw, 'base64').toString();
+
+        core.debug('ℹ cert: \n'+defaultOptions.https.certificateAuthority);
     }
 
     const clientCertificateRaw = core.getInput('clientCertificate', { required: false });
@@ -18885,6 +18887,7 @@ async function getClientToken(client, method, path, payload) {
     };
 
     core.debug(`Retrieving Vault Token from ${path} endpoint`);
+    core.debug(`payload: ${JSON.stringify(options)}`);
 
     /** @type {import('got').Response<VaultLoginResponse>} */
     let response;
