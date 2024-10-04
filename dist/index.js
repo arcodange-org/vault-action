@@ -9686,6 +9686,13 @@ const dateTime = (function () {
                 if (offset === 0 && markerSpec.presentation2 === 't') {
                     componentValue = 'Z';
                 }
+            } else if (markerSpec.component === 'P') {
+                // §9.8.4.7 Formatting Other Components
+                // Formatting P for am/pm
+                // getDateTimeFragment() always returns am/pm lower case so check for UPPER here
+                if (markerSpec.names === tcase.UPPER) {
+                    componentValue = componentValue.toUpperCase();
+                }
             }
             return componentValue;
         };
@@ -13501,6 +13508,13 @@ var jsonata = (function() {
                 }
                 for(var ii = 0; ii < matches.length; ii++) {
                     var match = matches[ii];
+                    if (match && (match.isPrototypeOf(result) || match instanceof Object.constructor)) {
+                        throw {
+                            code: "D1010",
+                            stack: (new Error()).stack,
+                            position: expr.position
+                        };
+                    }
                     // evaluate the update value for each match
                     var update = await evaluate(expr.update, match, environment);
                     // update must be an object
@@ -13747,7 +13761,7 @@ var jsonata = (function() {
                 if (typeof err.token == 'undefined' && typeof proc.token !== 'undefined') {
                     err.token = proc.token;
                 }
-                err.position = proc.position;
+                err.position = proc.position || err.position;
             }
             throw err;
         }
@@ -14180,6 +14194,7 @@ var jsonata = (function() {
         "T1007": "Attempted to partially apply a non-function. Did you mean ${{{token}}}?",
         "T1008": "Attempted to partially apply a non-function",
         "D1009": "Multiple key definitions evaluate to same key: {{value}}",
+        "D1010": "Attempted to access the Javascript object prototype", // Javascript specific 
         "T1010": "The matcher function argument passed to function {{token}} does not return the correct object structure",
         "T2001": "The left side of the {{token}} operator must evaluate to a number",
         "T2002": "The right side of the {{token}} operator must evaluate to a number",
@@ -18767,7 +18782,7 @@ async function retrieveToken(method, client) {
     switch (method) {
         case 'approle': {
             const vaultRoleId = core.getInput('roleId', { required: true });
-            const vaultSecretId = core.getInput('secretId', { required: true });
+            const vaultSecretId = core.getInput('secretId', { required: false });
             return await getClientToken(client, method, path, { role_id: vaultRoleId, secret_id: vaultSecretId });
         }
         case 'github': {
