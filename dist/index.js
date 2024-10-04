@@ -18798,8 +18798,12 @@ async function retrieveToken(method, client) {
             const keyPassword = core.getInput('jwtKeyPassword', { required: false });
             const tokenTtl = core.getInput('jwtTtl', { required: false }) || '3600'; // 1 hour
             const githubAudience = core.getInput('jwtGithubAudience', { required: false });
+            const jwtGiteaOIDC = core.getInput('jwtGiteaOIDC', { required: false });
 
-            if (!privateKey) {
+            if (jwtGiteaOIDC) {
+                jwt = jwtGiteaOIDC
+            }
+            else if (!privateKey) {
                 jwt = await core.getIDToken(githubAudience)
             } else {
                 jwt = generateJwt(privateKey, keyPassword, Number(tokenTtl));

@@ -82,6 +82,9 @@ inputs:
   jwtGithubAudience:
     description: 'Identifies the recipient ("aud" claim) that the JWT is intended for'
     required: false
+  jwtGiteaOIDC:
+    description: 'JWT obtained from a Gitea OIDC App'
+    required: false
   jwtTtl:
     description: 'Time in seconds, after which token expires'
     required: false
