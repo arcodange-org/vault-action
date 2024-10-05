@@ -52,8 +52,6 @@ async function exportSecrets() {
     const caCertificateRaw = core.getInput('caCertificate', { required: false });
     if (caCertificateRaw != null) {
         defaultOptions.https.certificateAuthority = Buffer.from(caCertificateRaw, 'base64').toString();
-
-        core.debug('ℹ cert: \n'+defaultOptions.https.certificateAuthority);
     }
 
     const clientCertificateRaw = core.getInput('clientCertificate', { required: false });
